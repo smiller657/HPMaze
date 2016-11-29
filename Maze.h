@@ -28,8 +28,8 @@ class Maze
 		
 		//Asks user to supply a maze file and saves the contents in the Maze object.
 		//In: None, but the function asks the user to supply a maze file.
-		//Out: None.
-		void importMaze();
+		//Out: True if succesfully imported. False if it is not.
+		bool importMaze();
 		
 		//Solves the maze using a stack.
 		//In: None, but a maze must be imported first.
@@ -61,6 +61,27 @@ class Maze
 		//Out: None, but updates the array associated with the object.
 		void setMaze(char m[][COLS], int ROWS, int COLS);
 		
+		//Getter for the row count of the maze.
+		//In: None.
+		//Out: The integer row count of the maze.
+		int getRows();
+
+		//Setter for the row count of the loaded maze.
+		//In: An integer for the number of rows in the maze.
+		//Out: None.
+		void setRows(int r);
+
+		//Getter for the column count of the loaded maze.
+		//In: None.
+		//Out: The integer for the number of rows in the maze.
+		int getCols();
+
+		//Setter for the column count of the loaded maze.
+		//In: An integer for the number of columns in the maze.
+		//Out: None.
+		void setCols(int c);
+
+
 		//Getter for the row that holds the entrance to the maze.
 		//In: None.
 		//Out: The row location for the entrance to the maze.
@@ -103,6 +124,8 @@ class Maze
 	
 	private:
 		char maze[ROWS][COLS];
+		int rows;
+		int cols;
 		int entranceRow;
 		int entranceCol;
 		stack<Cell> HermioneSolution;

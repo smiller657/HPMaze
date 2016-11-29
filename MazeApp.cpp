@@ -15,5 +15,7 @@ using namespace std;
 int main() {
 	cout<<"Welcome to Hermione and Ron's MapQuest!"<<endl;
 	Maze maze;
+	bool importSuccess = maze.importMaze();
+	maze.printMazeSolution('r');
 	return 0;
 }
