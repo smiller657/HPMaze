@@ -15,8 +15,19 @@ Cell::Cell()
 	parentCol = -1;
 	visited = false;
 	backtracked = false;
+	intersection = false;
 	row = -1;
 	col = -1;
+}
+
+char Cell::getMazeChar()
+{
+	return mazeChar;
+}
+
+void Cell::setMazeChar(char m)
+{
+	mazeChar = m;
 }
 
 char Cell::getDirection()
@@ -87,5 +98,13 @@ int Cell::getCol()
 void Cell::setCol(int c)
 {
 	col = c;
+}
+
+bool Cell::getIntersection() {
+	return intersection;
+}
+
+void Cell::setIntersection(bool intersects) {
+	intersection = intersects;
 }
 #endif

@@ -12,7 +12,10 @@ class Cell
 		//In: None.
 		//Out: None, but a Cell object.
 		Cell();
-		
+
+		char getMazeChar();
+		void setMazeChar(char m);
+
 		//Getter for the Character representing the parent cell's relation to the current cell.
 		//In: None.
 		//Out: Returns Character representing the parent cell's relation to the current cell.
@@ -82,7 +85,12 @@ class Cell
 		//In: The column location of the cell on the map.
 		//Out: None.
 		void setCol(int c);
+
+		bool getIntersection();
+
+		void setIntersection(bool intersects);
 	private:
+		char mazeChar;
 		char direction; //N/S/E/W direction from the parent cell.
 		int parentRow; //the row of the parent cell.
 		int parentCol; //the column of the parent cell.
@@ -90,5 +98,6 @@ class Cell
 		bool backtracked; //True if we have backtracked over this cell.
 		int row; //Cell's row location on the map.
 		int col; //Cell's column location on the map.
+		bool intersection;
 };
 #endif

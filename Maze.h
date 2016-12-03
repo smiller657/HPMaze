@@ -34,18 +34,20 @@ class Maze
 		//Solves the maze using a stack.
 		//In: None, but a maze must be imported first.
 		//Out: None, but saves the solution for the maze in a stack.
-		void runHermione();
+		bool runHermione();
 		
 		//Solves the maze using a queue.
 		//In: None, but a maze must be improted first.
 		//Out: None, but saves the solution for the maze in a queue.
-		void runRon();
+		bool runRon();
 		
 		//Prints the sequence of moves for a requested solution.
 		//In: A char 'H' for Hermione's stack solution or 'R' for Ron's queue solution.
 		//Out: None, but prints the path to the console.
 		void printMoves(char sq);
-		
+
+		void printMaze();
+
 		//Prints the maze for a requested solution.
 		//In: A char 'H' for Hermione's stack solution or 'R' for Ron's queue solution.
 		//Out: None, but prints the maze with solution to console.
@@ -124,11 +126,13 @@ class Maze
 	
 	private:
 		char maze[ROWS][COLS];
+		Cell hMaze[ROWS][COLS];
+		Cell rMaze[ROWS][COLS];
 		int rows;
 		int cols;
 		int entranceRow;
 		int entranceCol;
-		stack<Cell> HermioneSolution;
-		queue<Cell> RonSolution;
+		stack<Cell> hermioneSolution;
+		queue<Cell> ronSolution;
 };
 #endif
