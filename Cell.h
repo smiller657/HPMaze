@@ -13,7 +13,14 @@ class Cell
 		//Out: None, but a Cell object.
 		Cell();
 
+		//Getter for the character displayed to the user.
+		//In: None.
+		//Out: Returns the character displayed in the maze.
 		char getMazeChar();
+
+		//Sets the character displayed to the user.
+		//In: A character for the maze.
+		//Out: None.
 		void setMazeChar(char m);
 
 		//Getter for the Character representing the parent cell's relation to the current cell.
@@ -86,8 +93,14 @@ class Cell
 		//Out: None.
 		void setCol(int c);
 
+		//Getter for whether the cell holds an intersection.
+		//In: None.
+		//Out: True if the cell is beside more than one neighbor. Otherwise, false.
 		bool getIntersection();
 
+		//Setter for whether the cell holds an intersection.
+		//In: True if the cell has more than one neighbor. Otherwise, false.
+		//Out: None.
 		void setIntersection(bool intersects);
 	private:
 		char mazeChar;

@@ -18,7 +18,7 @@ int main() {
 	bool importSuccess = maze.importMaze();
 	maze.printMaze();
 	bool hSolution = maze.runHermione();
-	maze.printMoves('h');
-	maze.printMazeSolution('h');
+	bool rSolution = maze.runRon();
+	cout<<"Thank you for using Hermione and Ron's MapQuest."<<endl;
 	return 0;
 }

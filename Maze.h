@@ -46,6 +46,9 @@ class Maze
 		//Out: None, but prints the path to the console.
 		void printMoves(char sq);
 
+		//Prints the maze imported by the user.
+		//In: None.
+		//Out: The original maze read in by the user.
 		void printMaze();
 
 		//Prints the maze for a requested solution.
@@ -62,6 +65,26 @@ class Maze
 		//In: The maze, passed by reference, which updates the maze object.
 		//Out: None, but updates the array associated with the object.
 		void setMaze(char m[][COLS], int ROWS, int COLS);
+				
+		//Getter for the Hermione's working maze.
+		//In: The maze, passed by reference.
+		//Out: None, except the pass by reference 2d array maze.
+		void getHMaze(Cell m[][COLS], int ROWS, int COLS);
+		
+		//Setter for the Hermione's working maze.
+		//In: The maze, passed by reference, which updates the maze object.
+		//Out: None, but updates the array associated with the object.
+		void setHMaze(Cell m[][COLS], int ROWS, int COLS);
+		
+		//Getter for ron's working maze.
+		//In: The maze, passed by reference.
+		//Out: None, except the pass by reference 2d array maze.
+		void getRMaze(Cell m[][COLS], int ROWS, int COLS);
+		
+		//Setter for ron's working maze.
+		//In: The maze, passed by reference, which updates the maze object.
+		//Out: None, but updates the array associated with the object.
+		void setRMaze(Cell m[][COLS], int ROWS, int COLS);
 		
 		//Getter for the row count of the maze.
 		//In: None.

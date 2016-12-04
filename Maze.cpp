@@ -140,11 +140,17 @@ bool Maze::runHermione()
 		Cell current = nStack.top();
 		int currentRow = current.getRow();
 		int currentCol = current.getCol();
-		hMaze[currentRow][currentCol].setMazeChar('S');
+		if (maze[currentRow][currentCol] == 'e') {
+			hMaze[currentRow][currentCol].setMazeChar('e');
+		} else if (maze[currentRow][currentCol] == 'h') {
+			hMaze[currentRow][currentCol].setMazeChar('x');
+		} else {
+			hMaze[currentRow][currentCol].setMazeChar('S');
+		}
 		hMaze[currentRow][currentCol].setVisited(true);
 		nStack.pop();
 		hermioneSolution.push(current);
-		cout<<"Popping "<<currentRow<<" "<<currentCol<<endl;
+		//cout<<"Popping "<<currentRow<<" "<<currentCol<<endl;
 		int neighbors = 0;
 		int direction = 0; //0=North, 1=South, 2=West, 3=East
 		current.setVisited(true);
@@ -178,13 +184,13 @@ bool Maze::runHermione()
 				if (maze[neighborRow][neighborCol] == 'h') {
 					hermioneSolution.push(neighbor);
 					hFound = true;
-					cout<<"Horcurx found at neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<endl;
+					//cout<<"Horcurx found at neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<endl;
 				} else if (!hMaze[neighborRow][neighborCol].getVisited() 
 						&& maze[neighborRow][neighborCol] == ' ') {
 					hMaze[neighborRow][neighborCol].setDirection(currentDirection);
 					nStack.push(neighbor);
 					neighbors++;
-					cout<<"Push neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
+					//cout<<"Push neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
 				}
 			} //end if push valid neighbors
 			direction++;
@@ -202,12 +208,12 @@ bool Maze::runHermione()
 					hMaze[hRow][hCol].setMazeChar('B');
 					hMaze[hRow][hCol].setBacktracked(true);
 					hermioneSolution.pop();
-					cout<<"Backtracking "<<hRow<<" "<<hCol<<endl;
+					//cout<<"Backtracking "<<hRow<<" "<<hCol<<endl;
 					if (hMaze[pRow][pCol].getIntersection()) {
 						intersectionFound = true;
 					}
 				}
-		} else if (neighbors >= 2) {
+			} else if (neighbors >= 2) {
 				current.setIntersection(true);
 			}
 		} //If !hFound
@@ -216,12 +222,162 @@ bool Maze::runHermione()
 		cout<<"No solution found."<<endl;
 		return false;
 	}
+	printMoves('h');
+	printMazeSolution('h');
 	return true;
 }
 
 
 bool Maze::runRon()
 {
+	if (entranceRow == -1 || entranceCol == -1) {
+		cout<<"There is no entrance to the maze."<<endl;
+		return false;
+	}
+	Cell current; //intital working cell variable
+	Cell path[100];
+	int pIndex = -1; //maintains index of path array
+	bool hFound = false; //determines if the horcrux is found
+
+	//Initial entrance cell
+	current.setRow(entranceRow);
+	current.setCol(entranceCol);
+	current.setMazeChar('e');
+	ronSolution.push(current);
+	//Explore maze
+	while (!hFound && !ronSolution.empty()) {
+		current = ronSolution.front();
+		ronSolution.pop();
+		current.setVisited(true);
+		int currentRow = current.getRow();
+		int currentCol = current.getCol();
+		if (maze[currentRow][currentCol] == 'e') {
+			rMaze[currentRow][currentCol].setMazeChar('e');
+		} else if (maze[currentRow][currentCol] == 'h') {
+			rMaze[currentRow][currentCol].setMazeChar('x');
+		} else {
+			rMaze[currentRow][currentCol].setMazeChar('S');
+		}
+		rMaze[currentRow][currentCol].setVisited(true);
+		pIndex++;
+		path[pIndex] = current;
+		//cout<<pIndex<<" path added "<<currentRow<<" "<<currentCol<<endl;
+		if (maze[currentRow][currentCol] == 'h') {
+			hFound = true;
+			//cout<<"Found horcrux at "<<currentRow<<" "<<currentCol<<endl;
+		} else { //Search for neighbors
+			int neighbors = 0;
+			int direction = 0; //0=North, 1=South, 2=West, 3=East
+			while (direction <= 3) { //Check your neighbors
+				int neighborRow = current.getRow();
+				int neighborCol = current.getCol();
+				char currentDirection = 'N';
+				if (direction == 0) {
+					currentDirection = 'N';
+					neighborRow--;
+				} else if (direction == 1) {
+					currentDirection = 'S';
+					neighborRow++;
+				} else if (direction == 2) {
+					currentDirection = 'W';
+					neighborCol--;
+				} else { //direction == 3
+					currentDirection = 'E';
+					neighborCol++;
+				}
+
+				//Push valid neighbors onto stack to find valid solution
+				if (neighborRow >= 0 && neighborRow < ROWS && neighborCol >= 0 && neighborCol < COLS) {
+					Cell neighbor;
+					neighbor.setDirection(currentDirection);
+					neighbor.setParentRow(currentRow);
+					neighbor.setParentCol(currentCol);
+					neighbor.setRow(neighborRow);
+					neighbor.setCol(neighborCol);
+					//If a valid unvisited cell, add to queuee 
+					if (!rMaze[neighborRow][neighborCol].getVisited() 
+							&& (maze[neighborRow][neighborCol] == ' ' || 
+								maze[neighborRow][neighborCol] == 'h')) {
+						rMaze[neighborRow][neighborCol].setDirection(currentDirection);
+						ronSolution.push(neighbor);
+						neighbors++;
+						//cout<<"queue neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
+					}
+				} //end if push valid neighbors
+				direction++;
+			} //end while direction <= 3
+		} //end else search for neighbors
+	} //end while !hFound && !ronSolution.empty()
+	//Find the true path
+//	cout<<"Made it through the neighborhood."<<endl;
+	if (!hFound) {
+		cout<<"No horcrux found."<<endl;
+	} else {
+		//Ensure that the last Cell in the array is the horcrux
+		/*Debugging lines*/
+		/*cout<<"pIndex= "<<pIndex<<". path array check: "<<endl;
+		for (int i = 0; i <= pIndex; i++) {
+			Cell c = path[i];
+			cout<<i<<": "<<c.getRow()<<" "<<c.getCol()<<" "<<c.getDirection()<<" "<<c.getParentRow()<<" "<<c.getParentCol()<<endl;
+		}
+		cout<<endl;*/
+		bool lastCell = false;
+		while (!lastCell) {
+			current = path[pIndex];
+			int row = current.getRow();
+			int col = current.getCol();
+			char test = maze[row][col];
+			if (maze[row][col] == 'h') {
+				lastCell = true;
+			} else {
+				pIndex--;
+			}
+		}
+		int trueIndex = pIndex; //Copy the pIndex to filter path array
+		while (trueIndex > 0) {
+			current = path[trueIndex];
+			Cell previous = path[trueIndex-1];
+			int parentRow = current.getParentRow();
+			int parentCol = current.getParentCol();
+			int previousRow = previous.getRow();
+			int previousCol = previous.getCol();
+			if (parentRow == previousRow && parentCol == previousCol) {
+				trueIndex--; //Keep the cell and go to next
+				//cout<<trueIndex<<" Match found at "<<previousRow<<" "<<previousCol<<" "<<parentRow<<" "<<parentCol<<endl;
+			} else { //Next Cell does not take most direct path, so remove
+				//cout<<trueIndex<<" match missed "<<previousRow<<" "<<previousCol<<" "<<parentRow<<" "<<parentCol<<endl;
+				for (int i = trueIndex; i <= pIndex; i++) {
+					path[i-1] = path[i];
+				}
+				pIndex--;
+				trueIndex--;
+			} //end else
+		} //end while
+		//Array should now hold the most direct path. Copy to array to ronSolution
+		while (!ronSolution.empty()) {
+			ronSolution.pop();
+		}
+		//clear the map of incorrect steps
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if (rMaze[i][j].getMazeChar() == 'S') {
+					rMaze[i][j].setMazeChar(' ');
+				}
+			}
+		}
+		for (int i = 0; i <= pIndex; i++) {
+			current = path[i];
+			//Update maze to show most direct path
+			int currentRow = current.getRow();
+			int currentCol = current.getCol();
+			if (rMaze[currentRow][currentCol].getMazeChar() != 'e' && rMaze[currentRow][currentCol].getMazeChar() != 'x') {
+				rMaze[currentRow][currentCol].setMazeChar('S');
+			}
+			ronSolution.push(current);
+		}
+	} //end !hFound else
+	printMoves('r');
+	printMazeSolution('r');
 	return true;
 }
 
@@ -232,41 +388,56 @@ void Maze::printMoves(char sq)
 	string seq = "";
 	if (sq == 'h') {
 		if (hermioneSolution.size() > 0) {
-		cout<<"Here is Hermione's solution: "<<endl;
-		stack<Cell> s;
-		int i = 0;
-		//Move hermione's solution to a temp stack
-		while (i < hermioneSolution.size()) {
-			c = hermioneSolution.top();
-			s.push(c);
-			hermioneSolution.pop();
-		}
-		//Pop the first since it's the start
-		c = s.top();
-		hermioneSolution.push(c);
-		s.pop();
-		//Concatinate to string and return to hermioneSolution
-		while (i < s.size()) {
+			cout<<"Here is Hermione's solution: "<<endl;
+			stack<Cell> s;
+			int i = 0;
+			//Move hermione's solution to a temp stack
+			while (i < hermioneSolution.size()) {
+				c = hermioneSolution.top();
+				s.push(c);
+				hermioneSolution.pop();
+			}
+			//Pop the first since it's the start
 			c = s.top();
-			seq = seq + c.getDirection() + "-";
 			hermioneSolution.push(c);
 			s.pop();
-		}
-		cout<<"The sequence of moves is "<<seq<<endl;
+			//Concatinate to string and return to hermioneSolution
+			while (i < s.size()) {
+				c = s.top();
+				seq = seq + c.getDirection() + "-";
+				hermioneSolution.push(c);
+				s.pop();
+			}
+			cout<<"The sequence of moves is "<<seq<<endl;
 		} else {
 			cout<<"No directions available for Hermione's solution."<<endl;
 		}
 	} else if (sq == 'r') {
-
+		int size = ronSolution.size();
+		if (size > 0) {
+			cout<<"Here is Ron's solution: "<<endl;
+			c = ronSolution.front();
+			ronSolution.pop();
+			ronSolution.push(c);
+			for (int i = 0; i < size-1; i++) {
+				c = ronSolution.front();
+				ronSolution.pop();
+				seq = seq + c.getDirection() + "-";
+				ronSolution.push(c);
+			}
+			cout<<"The sequence of moves is "<<seq<<endl;
+		} else {
+			cout<<"No directions available for Ron's solution."<<endl;
+		}
 	} else {
 		cout<<"Invalid command."<<endl;
 	}
 }
 
 void Maze::printMaze() {
-	cout<<"_0123456789"<<endl;
+	//cout<<"_0123456789"<<endl;
 	for (int i = 0; i < ROWS; i++) {
-		cout<<i;
+		//cout<<i;
 		for (int j = 0; j < COLS; j++) {
 			cout<<maze[i][j];
 		}
@@ -298,26 +469,59 @@ void Maze::printMazeSolution(char sq)
 	}
 }	
 
-
 void Maze::getMaze(char m[][COLS], int ROWS, int COLS)
 {
-	/*for (int i = 0; i < ROWS; i++) {
+	for (int i = 0; i < ROWS; i++) {
 	  for (int j = 0; j < COLS; j++) {
-	  maze[i][j] = '-';
+	  m[i][j] = maze[i][j];
 	  }
-	  }*/
+	}
 }	
-
 
 void Maze::setMaze(char m[][COLS], int ROWS, int COLS)
 {
-	/*for (int i = 0; i < ROWS; i++) {
+	for (int i = 0; i < ROWS; i++) {
 	  for (int j = 0; j < COLS; j++) {
-	  maze[i][j] = '-';
+	  	maze[i][j] = m[i][j];
 	  }
-	  }*/
+	}
 }	
 
+void Maze::getHMaze(Cell m[][COLS], int ROWS, int COLS)
+{
+	for (int i = 0; i < ROWS; i++) {
+	  for (int j = 0; j < COLS; j++) {
+	  m[i][j] = hMaze[i][j];
+	  }
+	}
+}	
+
+void Maze::setHMaze(Cell m[][COLS], int ROWS, int COLS)
+{
+	for (int i = 0; i < ROWS; i++) {
+	  for (int j = 0; j < COLS; j++) {
+	  	hMaze[i][j] = m[i][j];
+	  }
+	}
+}
+
+void Maze::getRMaze(Cell m[][COLS], int ROWS, int COLS)
+{
+	for (int i = 0; i < ROWS; i++) {
+	  for (int j = 0; j < COLS; j++) {
+	  m[i][j] = rMaze[i][j];
+	  }
+	}
+}	
+
+void Maze::setRMaze(Cell m[][COLS], int ROWS, int COLS)
+{
+	for (int i = 0; i < ROWS; i++) {
+	  for (int j = 0; j < COLS; j++) {
+	  	rMaze[i][j] = m[i][j];
+	  }
+	}
+}
 int Maze::getRows()
 {
 	return rows;
