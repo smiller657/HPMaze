@@ -190,7 +190,7 @@ bool Maze::runHermione()
 					hMaze[neighborRow][neighborCol].setDirection(currentDirection);
 					nStack.push(neighbor);
 					neighbors++;
-					//cout<<"Push neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
+					cout<<"Push neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
 				}
 			} //end if push valid neighbors
 			direction++;
