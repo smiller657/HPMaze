@@ -439,9 +439,9 @@ void Maze::printMoves(char sq)
 
 void Maze::printMaze() {
 	//cout<<"_0123456789"<<endl;
-	for (int i = 0; i < ROWS; i++) {
+	for (int i = 0; i < rows; i++) {
 		//cout<<i;
-		for (int j = 0; j < COLS; j++) {
+		for (int j = 0; j < cols; j++) {
 			cout<<maze[i][j];
 		}
 		cout<<endl;
@@ -453,16 +453,16 @@ void Maze::printMazeSolution(char sq)
 {
 	Cell c;
 	if (sq == 'h') {
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLS; j++) {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				c = hMaze[i][j];
 				cout<<c.getMazeChar();
 			}
 			cout<<endl;
 		}
 	} else if (sq == 'r') {
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLS; j++) {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				cout<<rMaze[i][j].getMazeChar();
 			}
 			cout<<endl;
