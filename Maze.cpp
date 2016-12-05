@@ -154,6 +154,7 @@ bool Maze::runHermione()
 		int neighbors = 0;
 		int direction = 0; //0=North, 1=South, 2=West, 3=East
 		current.setVisited(true);
+
 		while (direction <= 3) { //Check your neighbors
 			int neighborRow = current.getRow();
 			int neighborCol = current.getCol();
@@ -190,11 +191,12 @@ bool Maze::runHermione()
 					hMaze[neighborRow][neighborCol].setDirection(currentDirection);
 					nStack.push(neighbor);
 					neighbors++;
-					cout<<"Push neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
+					//cout<<"Push neighbor "<<neighbor.getRow()<<" "<<neighbor.getCol()<<" "<<neighbor.getDirection()<<endl;
 				}
 			} //end if push valid neighbors
 			direction++;
 		}//end while neighbor check
+		
 		if (!hFound) {
 			if (neighbors == 0) {
 				//backtrack to last intersection
@@ -208,13 +210,14 @@ bool Maze::runHermione()
 					hMaze[hRow][hCol].setMazeChar('B');
 					hMaze[hRow][hCol].setBacktracked(true);
 					hermioneSolution.pop();
-					//cout<<"Backtracking "<<hRow<<" "<<hCol<<endl;
+					bool iFound = hMaze[pRow][pCol].getIntersection();
+					//cout<<"Backtracking "<<hRow<<" "<<hCol<<" "<<pRow<<" "<<pCol<<" "<<iFound<<endl;
 					if (hMaze[pRow][pCol].getIntersection()) {
 						intersectionFound = true;
 					}
 				}
 			} else if (neighbors >= 2) {
-				current.setIntersection(true);
+				hMaze[currentRow][currentCol].setIntersection(true);
 			}
 		} //If !hFound
 	}//end while explore maze
